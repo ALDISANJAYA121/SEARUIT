@@ -12,7 +12,7 @@ class PageController extends Controller
     public function index()
     {
         $lists_bps_ri = ListApp::where('pembuat', 'BPS RI')->orderBy('nama', 'asc')->get();
-        $lists_bps_aceh = ListApp::where('pembuat', 'BPS Aceh')->orderBy('nama', 'asc')->get();
+        $lists_bps_lampung = ListApp::where('pembuat', 'BPS Provinsi Lampung')->orderBy('nama', 'asc')->get();
         $lists_bps_kabkot = ListApp::where('pengguna', 'BPS satker kako pembuat saja')->orderBy('nama', 'asc')->get();
 
         $tophits = ListApp::orderBy('hits', 'desc')->take(10)->get();
@@ -22,55 +22,55 @@ class PageController extends Controller
         array_unshift($topItemsArray, $lastElement);
         $tophits = collect($topItemsArray);
 
-        return view('index', compact('lists_bps_ri', 'lists_bps_aceh', 'lists_bps_kabkot', 'tophits'));
+        return view('index', compact('lists_bps_ri', 'lists_bps_lampung', 'lists_bps_kabkot', 'tophits'));
     }
 
     //search
     public function search(Request $request)
     {
         $keyword = $request->keyword;
-        
+
         $lists_bps_ri = ListApp::where('pembuat', 'BPS RI')->orderBy('nama', 'asc')->get();
-        if($keyword != '') {
+        if ($keyword != '') {
             $lists_bps_ri = ListApp::where('pembuat', 'BPS RI')
-                        ->where(function ($query) use ($keyword) {
-                            $query->where('nama', 'LIKE', '%' . $keyword . '%')
-                                ->orWhere('pembuat', 'LIKE', '%' . $keyword . '%')
-                                ->orWhere('deskripsi', 'LIKE', '%' . $keyword . '%');
-                        })
-                        ->orderBy('nama', 'asc')
-                        ->get();
+                ->where(function ($query) use ($keyword) {
+                    $query->where('nama', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('pembuat', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('deskripsi', 'LIKE', '%' . $keyword . '%');
+                })
+                ->orderBy('nama', 'asc')
+                ->get();
         }
 
-        $lists_bps_aceh = ListApp::where('pembuat', 'BPS Aceh')->orderBy('nama', 'asc')->get();
-        if($keyword != '') {
-            $lists_bps_aceh = ListApp::where('pembuat', 'BPS Aceh')
-                        ->where(function ($query) use ($keyword) {
-                            $query->where('nama', 'LIKE', '%' . $keyword . '%')
-                                ->orWhere('pembuat', 'LIKE', '%' . $keyword . '%')
-                                ->orWhere('deskripsi', 'LIKE', '%' . $keyword . '%');
-                        })
-                        ->orderBy('nama', 'asc')
-                        ->get();
+        $lists_bps_lampung = ListApp::where('pembuat', 'BPS Provinsi Lampung')->orderBy('nama', 'asc')->get();
+        if ($keyword != '') {
+            $lists_bps_lampung = ListApp::where('pembuat', 'BPS Provinsi Lampung')
+                ->where(function ($query) use ($keyword) {
+                    $query->where('nama', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('pembuat', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('deskripsi', 'LIKE', '%' . $keyword . '%');
+                })
+                ->orderBy('nama', 'asc')
+                ->get();
         }
 
         $lists_bps_kabkot = ListApp::where('pengguna', 'BPS satker kako pembuat saja')->orderBy('nama', 'asc')->get();
-        if($keyword != '') {
+        if ($keyword != '') {
             $lists_bps_kabkot = ListApp::where('pengguna', 'BPS satker kako pembuat saja')
-                        ->where(function ($query) use ($keyword) {
-                            $query->where('nama', 'LIKE', '%' . $keyword . '%')
-                                ->orWhere('deskripsi', 'LIKE', '%' . $keyword . '%')
-                                ->orWhere('pembuat', 'LIKE', '%' . $keyword . '%');
-                        })
-                        ->orderBy('nama', 'asc')
-                        ->get();
+                ->where(function ($query) use ($keyword) {
+                    $query->where('nama', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('deskripsi', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('pembuat', 'LIKE', '%' . $keyword . '%');
+                })
+                ->orderBy('nama', 'asc')
+                ->get();
         }
 
         return response()->json([
             'lists_bps_ri' => $lists_bps_ri,
-            'lists_bps_aceh' => $lists_bps_aceh,
+            'lists_bps_lampung' => $lists_bps_lampung,
             'lists_bps_kabkot' => $lists_bps_kabkot
-         ]);
+        ]);
     }
 
     public function updateHits(Request $request)
@@ -109,7 +109,7 @@ class PageController extends Controller
             'deskripsi' => 'required',
             'logo' => 'mimes:jpg,png,jpeg,gif,svg|max:2048'
         ]);
-        
+
         $app = new ListApp;
 
         $app->nama = $request->nama;
@@ -120,7 +120,7 @@ class PageController extends Controller
         $app->link = $request->link;
         $app->deskripsi = $request->deskripsi;
 
-        if($request->file('logo') != NULL) {
+        if ($request->file('logo') != NULL) {
             $image = time() . '_' . $request->file('logo')->getClientOriginalName();
             $app->logo = $image;
             $request->logo->move(public_path('/img'), $image);
@@ -165,7 +165,7 @@ class PageController extends Controller
 
             File::delete(public_path('/img') . $app->logo);
             $request->logo->move(public_path('/img'), $name);
-    
+
             $app->logo = $name;
         }
 

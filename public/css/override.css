@@ -1,0 +1,6 @@
+.bg-\[\#ff3030\] {
+    --tw-bg-opacity: 1;
+    /* background-color: rgb(30 160 94 / var(--tw-bg-opacity)); */
+    background-color: rgb(255 48 48 / var(--tw-bg-opacity));
+    background-color: #ff3030;
+  }
